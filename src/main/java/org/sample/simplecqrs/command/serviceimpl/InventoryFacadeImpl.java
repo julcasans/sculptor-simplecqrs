@@ -2,13 +2,13 @@ package org.sample.simplecqrs.command.serviceimpl;
 
 import java.util.Date;
 
-import org.sample.simplecqrs.command.domain.InventoryItem;
-import org.sample.simplecqrs.command.eventapi.InventoryItemCreated;
-import org.sample.simplecqrs.command.eventapi.InventoryItemDeactivated;
-import org.sample.simplecqrs.command.eventapi.InventoryItemRenamed;
-import org.sample.simplecqrs.command.eventapi.ItemsCheckedInToInventory;
-import org.sample.simplecqrs.command.eventapi.ItemsRemovedFromInventory;
-import org.sample.simplecqrs.command.exception.InventoryItemNotFoundException;
+import org.sample.simplecqrs.command.domain.CheckInItemsToInventory;
+import org.sample.simplecqrs.command.domain.CreateInventoryItem;
+import org.sample.simplecqrs.command.domain.DeactivateInventoryItem;
+import org.sample.simplecqrs.command.domain.RemoveItemsFromInventory;
+import org.sample.simplecqrs.command.domain.RenameInventoryItem;
+import org.sample.simplecqrs.command.serviceapi.InventoryItemCommandEventSourcingProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,50 +16,30 @@ import org.springframework.stereotype.Service;
  */
 @Service("inventoryFacade")
 public class InventoryFacadeImpl extends InventoryFacadeImplBase {
+    @Autowired
+    private InventoryItemCommandEventSourcingProcessor commandProcessor;
+
     public InventoryFacadeImpl() {
     }
 
     public void createInventoryItem(String itemId, String name) {
-        getInventoryItemRepository().save(new InventoryItem(itemId));
-        getInventoryItemEventPublisher().publishEvent(new InventoryItemCreated(new Date(), itemId, name));
+        commandProcessor.apply(new CreateInventoryItem(new Date(), itemId, name));
     }
 
     public void deactivateInventoryItem(String itemId) {
-        InventoryItem item = tryGetItem(itemId);
-        item.deactivate();
-        getInventoryItemRepository().save(item);
-        getInventoryItemEventPublisher().publishEvent(new InventoryItemDeactivated(new Date(), itemId));
+        commandProcessor.apply(new DeactivateInventoryItem(new Date(), itemId));
     }
 
     public void renameInventoryItem(String itemId, String newName) {
-        InventoryItem item = tryGetItem(itemId);
-        item.setName(newName);
-        getInventoryItemRepository().save(item);
-        getInventoryItemEventPublisher().publishEvent(new InventoryItemRenamed(new Date(), itemId, newName));
+        commandProcessor.apply(new RenameInventoryItem(new Date(), itemId, newName));
     }
 
     public void checkInItemsToInventory(String itemId, int count) {
-        InventoryItem item = tryGetItem(itemId);
-        item.checkIn(count);
-        getInventoryItemRepository().save(item);
-        int currentCount = item.getCount();
-        getInventoryItemEventPublisher().publishEvent(new ItemsCheckedInToInventory(new Date(), itemId, currentCount));
+        commandProcessor.apply(new CheckInItemsToInventory(new Date(), itemId, count));
     }
 
     public void removeItemsFromInventory(String itemId, int count) {
-        InventoryItem item = tryGetItem(itemId);
-        item.remove(count);
-        getInventoryItemRepository().save(item);
-        int currentCount = item.getCount();
-        getInventoryItemEventPublisher().publishEvent(new ItemsRemovedFromInventory(new Date(), itemId, currentCount));
-    }
-
-    private InventoryItem tryGetItem(String itemId) {
-        try {
-            return getInventoryItemRepository().findByKey(itemId);
-        } catch (InventoryItemNotFoundException e) {
-            throw new IllegalStateException("Unknown item: " + itemId);
-        }
+        commandProcessor.apply(new RemoveItemsFromInventory(new Date(), itemId, count));
     }
 
 }

@@ -39,6 +39,7 @@ Application SimpleCqrs {
         	String itemId
         }
         
+        
         CommandEvent DeactivateInventoryItem extends @InventoryItemCommand {
         }
         
