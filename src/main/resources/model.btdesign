@@ -30,32 +30,6 @@ Application SimpleCqrs {
     		publishEvent(@InventoryItemEvent event) publish to inventoryItemTopic; 
     	}
         
-        /*
-        abstract CommandEvent InventoryItemCommand {
-        	scaffold
-        	String itemId
-        }
-        
-        CommandEvent DeactivateInventoryItem extends @InventoryItemCommand {
-        }
-        
-        CommandEvent CreateInventoryItem extends @InventoryItemCommand {
-        	String name
-        }
-        
-        CommandEvent RenameInventoryItem extends @InventoryItemCommand {
-        	String newName
-        }
-        
-        CommandEvent CheckInItemsToInventory extends @InventoryItemCommand {
-        	int countChange
-        }
-        
-        CommandEvent RemoveItemsFromInventory extends @InventoryItemCommand {
-        	int countChange
-        }
-        */
-        
         abstract DomainEvent InventoryItemEvent {
         	String itemId
         }
