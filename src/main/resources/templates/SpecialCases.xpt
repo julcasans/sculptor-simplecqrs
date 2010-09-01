@@ -1,0 +1,42 @@
+«REM»
+You can change code generation templates by using
+Aspect-Oriented Programming features of oAW. You
+can add AROUND advice in this file. Read 
+Sculptor Developer's Guide for more information.
+«ENDREM»     
+
+«IMPORT sculptormetamodel»
+«EXTENSION extensions::helper»
+«EXTENSION extensions::properties»
+
+«AROUND templates::DomainObject::domainObjectHook FOR DomainObject»
+    // This comment was generated from SpecialCases.xpt 
+«ENDAROUND»
+
+«REM»Workaround for CSC-535«ENDREM»
+«AROUND templates::PubSub::publishAnnotation FOR Publish» 
+«ENDAROUND»
+
+«REM»Workaround for CSC-535«ENDREM»
+«AROUND templates::Service::serviceMethodAnnotation FOR ServiceOperation»
+	 «targetDef.proceed()»
+	 «IF publish != null»«EXPAND fixedPublishAnnotation FOR publish»«ENDIF-»
+«ENDAROUND»
+
+«REM»Workaround for CSC-535«ENDREM»
+«AROUND templates::Repository::repositoryMethodAnnotation FOR RepositoryOperation»
+	 «targetDef.proceed()»
+	 «IF publish != null»«EXPAND fixedPublishAnnotation FOR publish»«ENDIF-»
+«ENDAROUND»
+
+«REM»Workaround for CSC-535«ENDREM»
+«DEFINE fixedPublishAnnotation FOR Publish»
+«LET eventType == null ? null : eventType.getDomainPackage() + "." + eventType.name + ".class"
+	AS eventTypeClass-»
+«formatAnnotationParameters("@" + fw("event.annotation.Publish"), {
+	eventTypeClass != null, "eventType", eventTypeClass,
+	topic != null, "topic", '"' + topic + '"',
+	eventBus != null, "eventBus", '"' + eventBus + '"'
+    }) -»
+«ENDLET-»
+«ENDDEFINE»

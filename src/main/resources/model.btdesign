@@ -1,0 +1,125 @@
+Application SimpleCqrs {
+    basePackage=org.sample.simplecqrs
+
+	Module command {
+		
+        Entity InventoryItem {
+        	gap
+        	String itemId key
+        	String name
+        	int count
+        	boolean activated
+        	
+        	Repository InventoryItemRepository { 
+        		findByKey;
+        		save;
+        	}
+        }
+        
+        Service InventoryFacade {
+        	inject @InventoryItemEventPublisher
+        	inject @InventoryItemRepository
+        	createInventoryItem(String itemId, String name);
+        	deactivateInventoryItem(String itemId);
+        	renameInventoryItem(String itemId, String newName);
+        	checkInItemsToInventory(String itemId, int count);
+        	removeItemsFromInventory(String itemId, int count);
+        }
+        
+        Service InventoryItemEventPublisher {
+    		publishEvent(@InventoryItemEvent event) publish to inventoryItemTopic; 
+    	}
+        
+        /*
+        abstract CommandEvent InventoryItemCommand {
+        	scaffold
+        	String itemId
+        }
+        
+        CommandEvent DeactivateInventoryItem extends @InventoryItemCommand {
+        }
+        
+        CommandEvent CreateInventoryItem extends @InventoryItemCommand {
+        	String name
+        }
+        
+        CommandEvent RenameInventoryItem extends @InventoryItemCommand {
+        	String newName
+        }
+        
+        CommandEvent CheckInItemsToInventory extends @InventoryItemCommand {
+        	int countChange
+        }
+        
+        CommandEvent RemoveItemsFromInventory extends @InventoryItemCommand {
+        	int countChange
+        }
+        */
+        
+        abstract DomainEvent InventoryItemEvent {
+        	String itemId
+        }
+        
+        DomainEvent InventoryItemDeactivated extends @InventoryItemEvent {
+        }
+        
+        DomainEvent InventoryItemCreated extends @InventoryItemEvent {
+        	String name
+        }
+        
+        DomainEvent InventoryItemRenamed extends @InventoryItemEvent {
+        	String newName
+        }
+        
+        DomainEvent ItemsCheckedInToInventory extends @InventoryItemEvent {
+        	int currentCount
+        }
+        
+        DomainEvent ItemsRemovedFromInventory extends @InventoryItemEvent {
+        	int currentCount
+        }
+	
+	}
+	
+	Module query {
+		Entity InventoryItemDetails {
+			String itemId key
+			String name required
+			int currentCount
+			
+			Repository InventoryItemDetailsRepository {
+				findByKey;
+				save;
+				delete;
+			}
+		}
+		
+		Entity InventoryItemList {
+			String itemId key
+			String name required
+			
+			Repository InventoryItemListRepository {
+				findByKey;
+				findAll;
+				save;
+				delete;
+			}
+		}
+		
+		Service InventoryListView {
+			subscribe to inventoryItemTopic
+			inject @InventoryItemListRepository
+		}
+		
+		Service InventoryItemDetailView {
+			subscribe to inventoryItemTopic
+			inject @InventoryItemDetailsRepository
+		}
+		
+		Service ReadModelFacade {
+			getInventoryItems => InventoryItemListRepository.findAll;
+			getInventoryItemDetails => InventoryItemDetailsRepository.findByKey;
+		}
+	}
+
+}
