@@ -2,11 +2,11 @@ package org.sample.simplecqrs.query.serviceimpl;
 
 import org.fornax.cartridges.sculptor.framework.event.DynamicMethodDispatcher;
 import org.fornax.cartridges.sculptor.framework.event.Event;
-import org.sample.simplecqrs.command.eventapi.InventoryItemCreated;
-import org.sample.simplecqrs.command.eventapi.InventoryItemDeactivated;
-import org.sample.simplecqrs.command.eventapi.InventoryItemRenamed;
-import org.sample.simplecqrs.command.eventapi.ItemsCheckedInToInventory;
-import org.sample.simplecqrs.command.eventapi.ItemsRemovedFromInventory;
+import org.sample.simplecqrs.command.domain.InventoryItemCreated;
+import org.sample.simplecqrs.command.domain.InventoryItemDeactivated;
+import org.sample.simplecqrs.command.domain.InventoryItemRenamed;
+import org.sample.simplecqrs.command.domain.ItemsCheckedInToInventory;
+import org.sample.simplecqrs.command.domain.ItemsRemovedFromInventory;
 import org.sample.simplecqrs.query.domain.InventoryItemDetails;
 import org.sample.simplecqrs.query.exception.InventoryItemDetailsNotFoundException;
 import org.springframework.stereotype.Service;
@@ -40,13 +40,13 @@ public class InventoryItemDetailViewImpl extends InventoryItemDetailViewImplBase
 
     public void handle(ItemsCheckedInToInventory event) {
         InventoryItemDetails item = tryGetItem(event.getItemId());
-        item.setCurrentCount(event.getCurrentCount());
+        item.setCurrentCount(item.getCurrentCount() + event.getCountChange());
         getInventoryItemDetailsRepository().save(item);
     }
 
     public void handle(ItemsRemovedFromInventory event) {
         InventoryItemDetails item = tryGetItem(event.getItemId());
-        item.setCurrentCount(event.getCurrentCount());
+        item.setCurrentCount(item.getCurrentCount() - event.getCountChange());
         getInventoryItemDetailsRepository().save(item);
     }
 

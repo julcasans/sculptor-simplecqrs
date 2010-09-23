@@ -6,12 +6,31 @@ Application SimpleCqrs {
         Entity InventoryItem {
         	gap
         	String itemId key
-        	String name
-        	int count
         	boolean activated
         	
-        	Repository InventoryItemRepository { 
+        	Repository InventoryItemRepository {
+        		gap
+        		inject @InventoryItemEventRepository
+        		inject @InventoryItemSnapshotRepository
         		findByKey;
+        		save;
+        	}
+        }
+        
+        Service InventoryItemSnapshotter {
+        	subscribe to inventoryItemTopic
+        	inject @InventoryItemRepository
+        	inject @InventoryItemSnapshotRepository
+        }
+        
+        ValueObject InventoryItemSnapshot {
+        	String itemId index
+        	boolean activated
+        	Long version
+        	
+        	Repository InventoryItemSnapshotRepository {
+        		@InventoryItemSnapshot getLatestSnapshot(String itemId);
+        		protected findByCondition(PagingParameter pagingParameter);
         		save;
         	}
         }
@@ -27,10 +46,9 @@ Application SimpleCqrs {
         Service InventoryItemEventPublisher {
     		publishEvent(@InventoryItemEvent event) publish to inventoryItemTopic; 
     	}
-    	
+        
     	Service InventoryCommandHandler {
     		subscribe to handleInventoryItemCommand eventBus=commandBus
-    		inject @InventoryItemEventPublisher
         	inject @InventoryItemRepository
     	}
         
@@ -38,7 +56,6 @@ Application SimpleCqrs {
         	scaffold
         	String itemId
         }
-        
         
         CommandEvent DeactivateInventoryItem extends @InventoryItemCommand {
         }
@@ -59,27 +76,33 @@ Application SimpleCqrs {
         	int countChange
         }
         
-        abstract DomainEvent InventoryItemEvent {
-        	String itemId
+        abstract CommandEvent InventoryItemEvent {
+        	String itemId index
+        	
+        	Repository InventoryItemEventRepository { 
+        		List<@InventoryItemEvent> findAllAfter(String itemId, long version);
+        		save(List<@InventoryItemEvent> entities);
+        		protected findByCondition;
+        	}
         }
         
-        DomainEvent InventoryItemDeactivated extends @InventoryItemEvent {
+        CommandEvent InventoryItemDeactivated extends @InventoryItemEvent {
         }
         
-        DomainEvent InventoryItemCreated extends @InventoryItemEvent {
+        CommandEvent InventoryItemCreated extends @InventoryItemEvent {
         	String name
         }
         
-        DomainEvent InventoryItemRenamed extends @InventoryItemEvent {
+        CommandEvent InventoryItemRenamed extends @InventoryItemEvent {
         	String newName
         }
         
-        DomainEvent ItemsCheckedInToInventory extends @InventoryItemEvent {
-        	int currentCount
+        CommandEvent ItemsCheckedInToInventory extends @InventoryItemEvent {
+        	int countChange
         }
         
-        DomainEvent ItemsRemovedFromInventory extends @InventoryItemEvent {
-        	int currentCount
+        CommandEvent ItemsRemovedFromInventory extends @InventoryItemEvent {
+        	int countChange
         }
 	
 	}

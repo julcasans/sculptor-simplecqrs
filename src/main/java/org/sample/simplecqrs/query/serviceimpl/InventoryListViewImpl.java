@@ -2,10 +2,10 @@ package org.sample.simplecqrs.query.serviceimpl;
 
 import org.fornax.cartridges.sculptor.framework.event.DynamicMethodDispatcher;
 import org.fornax.cartridges.sculptor.framework.event.Event;
-import org.sample.simplecqrs.command.eventapi.InventoryItemCreated;
-import org.sample.simplecqrs.command.eventapi.InventoryItemDeactivated;
-import org.sample.simplecqrs.command.eventapi.InventoryItemEvent;
-import org.sample.simplecqrs.command.eventapi.InventoryItemRenamed;
+import org.sample.simplecqrs.command.domain.InventoryItemCreated;
+import org.sample.simplecqrs.command.domain.InventoryItemDeactivated;
+import org.sample.simplecqrs.command.domain.InventoryItemEvent;
+import org.sample.simplecqrs.command.domain.InventoryItemRenamed;
 import org.sample.simplecqrs.query.domain.InventoryItemList;
 import org.sample.simplecqrs.query.exception.InventoryItemListNotFoundException;
 import org.springframework.stereotype.Service;

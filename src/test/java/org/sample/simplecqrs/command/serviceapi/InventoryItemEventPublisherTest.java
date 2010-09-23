@@ -1,25 +1,28 @@
 package org.sample.simplecqrs.command.serviceapi;
 
-import java.util.Set;
-
 import org.fornax.cartridges.sculptor.framework.accessimpl.mongodb.DbManager;
+
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.util.Set;
 
 /**
  * Spring based test with MongoDB.
  */
 @RunWith(org.springframework.test.context.junit4.SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:applicationContext-test.xml" })
-@Ignore
-public class InventoryItemEventPublisherTest extends AbstractDependencyInjectionSpringContextTests implements
-        InventoryItemEventPublisherTestBase {
+@ContextConfiguration(locations =  {
+    "classpath:applicationContext-test.xml"}
+)
+public class InventoryItemEventPublisherTest
+    extends AbstractDependencyInjectionSpringContextTests
+    implements InventoryItemEventPublisherTestBase {
     @Autowired
     private DbManager dbManager;
     @Autowired
@@ -53,5 +56,7 @@ public class InventoryItemEventPublisherTest extends AbstractDependencyInjection
 
     @Test
     public void testPublishEvent() throws Exception {
+        // TODO Auto-generated method stub
+        fail("testPublishEvent not implemented");
     }
 }
