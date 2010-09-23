@@ -36,6 +36,7 @@ Application SimpleCqrs {
         }
         
         Service InventoryFacade {
+        	inject @InventoryItemRepository
         	createInventoryItem(String itemId, String name);
         	deactivateInventoryItem(String itemId);
         	renameInventoryItem(String itemId, String newName);
@@ -46,35 +47,6 @@ Application SimpleCqrs {
         Service InventoryItemEventPublisher {
     		publishEvent(@InventoryItemEvent event) publish to inventoryItemTopic; 
     	}
-        
-    	Service InventoryCommandHandler {
-    		subscribe to handleInventoryItemCommand eventBus=commandBus
-        	inject @InventoryItemRepository
-    	}
-        
-        abstract CommandEvent InventoryItemCommand {
-        	scaffold
-        	String itemId
-        }
-        
-        CommandEvent DeactivateInventoryItem extends @InventoryItemCommand {
-        }
-        
-        CommandEvent CreateInventoryItem extends @InventoryItemCommand {
-        	String name
-        }
-        
-        CommandEvent RenameInventoryItem extends @InventoryItemCommand {
-        	String newName
-        }
-        
-        CommandEvent CheckInItemsToInventory extends @InventoryItemCommand {
-        	int countChange
-        }
-        
-        CommandEvent RemoveItemsFromInventory extends @InventoryItemCommand {
-        	int countChange
-        }
         
         abstract CommandEvent InventoryItemEvent {
         	String itemId index
