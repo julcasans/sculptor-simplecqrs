@@ -11,26 +11,7 @@ Application SimpleCqrs {
         	Repository InventoryItemRepository {
         		gap
         		inject @InventoryItemEventRepository
-        		inject @InventoryItemSnapshotRepository
         		findByKey;
-        		save;
-        	}
-        }
-        
-        Service InventoryItemSnapshotter {
-        	subscribe to inventoryItemTopic
-        	inject @InventoryItemRepository
-        	inject @InventoryItemSnapshotRepository
-        }
-        
-        ValueObject InventoryItemSnapshot {
-        	String itemId index
-        	boolean activated
-        	Long version
-        	
-        	Repository InventoryItemSnapshotRepository {
-        		@InventoryItemSnapshot getLatestSnapshot(String itemId);
-        		protected findByCondition(PagingParameter pagingParameter);
         		save;
         	}
         }
@@ -50,7 +31,7 @@ Application SimpleCqrs {
         	String itemId index
         	
         	Repository InventoryItemEventRepository { 
-        		List<@InventoryItemEvent> findAllAfter(String itemId, long version);
+        		List<@InventoryItemEvent> findAllForItem(String itemId);
         		save publish to inventoryItemTopic;
         		protected findByCondition;
         	}

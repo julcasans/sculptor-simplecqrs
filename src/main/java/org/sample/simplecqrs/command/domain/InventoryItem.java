@@ -98,16 +98,4 @@ public class InventoryItem extends InventoryItemBase {
         }
     }
 
-    public void applySnapshot(InventoryItemSnapshot snapshot) {
-        if (snapshot == null) {
-            return;
-        }
-        setActivated(snapshot.isActivated());
-        setVersion(snapshot.getVersion());
-    }
-
-    public InventoryItemSnapshot createSnapshot() {
-        return new InventoryItemSnapshot(getItemId(), isActivated(), getVersion());
-    }
-
 }

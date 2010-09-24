@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.sample.simplecqrs.command.domain.InventoryItem;
 import org.sample.simplecqrs.command.domain.InventoryItemEvent;
-import org.sample.simplecqrs.command.domain.InventoryItemSnapshot;
 import org.sample.simplecqrs.command.exception.InventoryItemNotFoundException;
 import org.springframework.stereotype.Repository;
 
@@ -50,12 +49,7 @@ public class InventoryItemRepositoryImpl extends InventoryItemRepositoryBase {
     }
 
     private void loadFromHistory(InventoryItem entity) {
-        InventoryItemSnapshot snapshot = getInventoryItemSnapshotRepository().getLatestSnapshot(entity.getItemId());
-        entity.applySnapshot(snapshot);
-        long snapshotVersion = snapshot == null ? 0 : snapshot.getVersion();
-
-        List<InventoryItemEvent> history = getInventoryItemEventRepository().findAllAfter(entity.getItemId(),
-                snapshotVersion);
+        List<InventoryItemEvent> history = getInventoryItemEventRepository().findAllForItem(entity.getItemId());
         entity.loadFromHistory(history);
     }
 
