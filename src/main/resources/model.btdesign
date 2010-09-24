@@ -44,6 +44,8 @@ Application SimpleCqrs {
         	removeItemsFromInventory(String itemId, int count);
         }
         
+        // TODO CommandEvent should be named DomainEvent
+        
         abstract CommandEvent InventoryItemEvent {
         	String itemId index
         	
