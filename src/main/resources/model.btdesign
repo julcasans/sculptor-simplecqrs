@@ -44,16 +44,12 @@ Application SimpleCqrs {
         	removeItemsFromInventory(String itemId, int count);
         }
         
-        Service InventoryItemEventPublisher {
-    		publishEvent(@InventoryItemEvent event) publish to inventoryItemTopic; 
-    	}
-        
         abstract CommandEvent InventoryItemEvent {
         	String itemId index
         	
         	Repository InventoryItemEventRepository { 
         		List<@InventoryItemEvent> findAllAfter(String itemId, long version);
-        		save(List<@InventoryItemEvent> entities);
+        		save publish to inventoryItemTopic;
         		protected findByCondition;
         	}
         }
