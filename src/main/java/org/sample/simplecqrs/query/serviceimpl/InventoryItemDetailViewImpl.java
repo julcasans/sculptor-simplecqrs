@@ -40,13 +40,13 @@ public class InventoryItemDetailViewImpl extends InventoryItemDetailViewImplBase
 
     public void handle(ItemsCheckedInToInventory event) {
         InventoryItemDetails item = tryGetItem(event.getItemId());
-        item.setCurrentCount(event.getCurrentCount());
+        item.setCurrentCount(item.getCurrentCount() + event.getCountChange());
         getInventoryItemDetailsRepository().save(item);
     }
 
     public void handle(ItemsRemovedFromInventory event) {
         InventoryItemDetails item = tryGetItem(event.getItemId());
-        item.setCurrentCount(event.getCurrentCount());
+        item.setCurrentCount(item.getCurrentCount() - event.getCountChange());
         getInventoryItemDetailsRepository().save(item);
     }
 

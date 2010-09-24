@@ -42,16 +42,14 @@ public class InventoryFacadeImpl extends InventoryFacadeImplBase {
         InventoryItem item = tryGetItem(itemId);
         item.checkIn(count);
         getInventoryItemRepository().save(item);
-        int currentCount = item.getCount();
-        getInventoryItemEventPublisher().publishEvent(new ItemsCheckedInToInventory(new Date(), itemId, currentCount));
+        getInventoryItemEventPublisher().publishEvent(new ItemsCheckedInToInventory(new Date(), itemId, count));
     }
 
     public void removeItemsFromInventory(String itemId, int count) {
         InventoryItem item = tryGetItem(itemId);
         item.remove(count);
         getInventoryItemRepository().save(item);
-        int currentCount = item.getCount();
-        getInventoryItemEventPublisher().publishEvent(new ItemsRemovedFromInventory(new Date(), itemId, currentCount));
+        getInventoryItemEventPublisher().publishEvent(new ItemsRemovedFromInventory(new Date(), itemId, count));
     }
 
     private InventoryItem tryGetItem(String itemId) {

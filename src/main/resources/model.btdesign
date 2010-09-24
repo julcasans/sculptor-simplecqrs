@@ -6,9 +6,9 @@ Application SimpleCqrs {
         Entity InventoryItem {
         	gap
         	String itemId key
+        	boolean activated
         	String name
         	int count
-        	boolean activated
         	
         	Repository InventoryItemRepository { 
         		findByKey;
@@ -46,11 +46,11 @@ Application SimpleCqrs {
         }
         
         DomainEvent ItemsCheckedInToInventory extends @InventoryItemEvent {
-        	int currentCount
+        	int countChange
         }
         
         DomainEvent ItemsRemovedFromInventory extends @InventoryItemEvent {
-        	int currentCount
+        	int countChange
         }
 	
 	}
