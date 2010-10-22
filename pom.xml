@@ -3,21 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!-- Add parent element when using multi module -->
-	<!-- 
-	<parent>
-		<artifactId>simplecqrs-parent</artifactId>
-		<groupId>org.simplecqrs</groupId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
-	-->
 	<groupId>org.simplecqrs</groupId>
 	<artifactId>simplecqrs</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>Business tier project for simplecqrs</name>
-	<!-- Remove properties element when using multi module, they are defined in parent pom.xml --> 
 	<properties>
-		<fornax-oaw-m2.version>3.0.1</fornax-oaw-m2.version>
+		<fornax-oaw-m2.version>3.2.0-SNAPSHOT</fornax-oaw-m2.version>
 		<spring.version>3.0.3.RELEASE</spring.version>
 		<log4j.version>1.2.14</log4j.version>
 		<commons-logging.version>1.0.3</commons-logging.version>
@@ -64,35 +55,37 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<encoding>ISO-8859-1</encoding>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.fornax.toolsupport</groupId>
-				<artifactId>fornax-oaw-m2-plugin</artifactId>
-				<version>${fornax-oaw-m2.version}</version>
-				<configuration>
-					<workflowEngine>mwe</workflowEngine>
-					<workflowDescriptor>workflow.mwe</workflowDescriptor>
-					<checkResources>
-						<checkResource>
-							src/main/resources/model.btdesign</checkResource>
-					</checkResources>
-					<properties>
-						<modelFile>model.btdesign</modelFile>
-						<appProject>simplecqrs</appProject>
-					</properties>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>run-workflow</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+		<groupId>org.fornax.toolsupport</groupId>
+		<artifactId>fornax-oaw-m2-plugin</artifactId>
+		<version>${fornax-oaw-m2.version}</version>
+		<configuration>
+			<workflowEngine>mwe2</workflowEngine>
+			<workflowDescriptor>file://${basedir}/src/main/resources/generator/Workflow.mwe2</workflowDescriptor>
+			<checkFilesets>
+				<checkFileset>
+					<directory>${basedir}</directory>
+					<includes><include>src/main/resources/*.btdesign</include></includes>
+				</checkFileset>
+			</checkFilesets>
+			<properties>
+				<modelFile>src/main/resources/model.btdesign</modelFile>
+				<appProject>${artifactId}</appProject>
+			</properties>
+		</configuration>
+		<executions>
+			<execution>
+				<phase>generate-sources</phase>
+				<goals>
+					<goal>run-workflow</goal>
+				</goals>
+			</execution>
+		</executions>
+	</plugin>
 			<plugin>
 				<groupId>org.fornax.toolsupport</groupId>
 				<artifactId>fornax-checksum-m2-plugin</artifactId>

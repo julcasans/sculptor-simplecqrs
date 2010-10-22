@@ -25,9 +25,8 @@ Application SimpleCqrs {
         	removeItemsFromInventory(String itemId, int count);
         }
         
-        // TODO CommandEvent should be named DomainEvent
-        
-        abstract CommandEvent InventoryItemEvent {
+        abstract DomainEvent InventoryItemEvent {
+        	persistent
         	String itemId index
         	
         	Repository InventoryItemEventRepository { 
@@ -37,22 +36,22 @@ Application SimpleCqrs {
         	}
         }
         
-        CommandEvent InventoryItemDeactivated extends @InventoryItemEvent {
+        DomainEvent InventoryItemDeactivated extends @InventoryItemEvent {
         }
         
-        CommandEvent InventoryItemCreated extends @InventoryItemEvent {
+        DomainEvent InventoryItemCreated extends @InventoryItemEvent {
         	String name
         }
         
-        CommandEvent InventoryItemRenamed extends @InventoryItemEvent {
+        DomainEvent InventoryItemRenamed extends @InventoryItemEvent {
         	String newName
         }
         
-        CommandEvent ItemsCheckedInToInventory extends @InventoryItemEvent {
+        DomainEvent ItemsCheckedInToInventory extends @InventoryItemEvent {
         	int countChange
         }
         
-        CommandEvent ItemsRemovedFromInventory extends @InventoryItemEvent {
+        DomainEvent ItemsRemovedFromInventory extends @InventoryItemEvent {
         	int countChange
         }
 	
