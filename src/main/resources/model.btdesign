@@ -6,7 +6,7 @@ Application SimpleCqrs {
         Entity InventoryItem {
         	gap
         	String itemId key
-        	transient boolean activated
+        	boolean activated transient
         	
         	Repository InventoryItemRepository {
         		gap
