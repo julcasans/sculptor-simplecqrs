@@ -20,17 +20,18 @@ public class InventoryItem extends InventoryItemBase {
     protected InventoryItem() {
     }
 
+    /**
+     * Use {@link #createNew(String, String)} for constructing new InventoryItem
+     * instances. This constructor is needed for persistence mapper.
+     */
     public InventoryItem(String itemId) {
-        this(itemId, "", false);
+        super(itemId);
     }
 
-    // TODO ugly with this isNew flag, but when obj are created from mapper no
-    // event should be created
-    public InventoryItem(String itemId, String name, boolean isNew) {
-        super(itemId);
-        if (isNew) {
-            applyChange(new InventoryItemCreated(new Date(), itemId, name));
-        }
+    public static InventoryItem createNew(String itemId, String name) {
+        InventoryItem result = new InventoryItem(itemId);
+        result.applyChange(new InventoryItemCreated(new Date(), itemId, name));
+        return result;
     }
 
     public void rename(String newName) {
