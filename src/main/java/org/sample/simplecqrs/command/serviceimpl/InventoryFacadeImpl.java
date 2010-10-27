@@ -13,29 +13,34 @@ public class InventoryFacadeImpl extends InventoryFacadeImplBase {
     public InventoryFacadeImpl() {
     }
 
+    @Override
     public void createInventoryItem(String itemId, String name) {
-        InventoryItem item = new InventoryItem(itemId, name, true);
+        InventoryItem item = InventoryItem.createNew(itemId, name);
         getInventoryItemRepository().save(item);
     }
 
+    @Override
     public void deactivateInventoryItem(String itemId) {
         InventoryItem item = tryGetItem(itemId);
         item.deactivate();
         getInventoryItemRepository().save(item);
     }
 
+    @Override
     public void renameInventoryItem(String itemId, String newName) {
         InventoryItem item = tryGetItem(itemId);
         item.rename(newName);
         getInventoryItemRepository().save(item);
     }
 
+    @Override
     public void checkInItemsToInventory(String itemId, int count) {
         InventoryItem item = tryGetItem(itemId);
         item.checkIn(count);
         getInventoryItemRepository().save(item);
     }
 
+    @Override
     public void removeItemsFromInventory(String itemId, int count) {
         InventoryItem item = tryGetItem(itemId);
         item.remove(count);
