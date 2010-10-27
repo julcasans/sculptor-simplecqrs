@@ -28,6 +28,8 @@ Application SimpleCqrs {
         abstract DomainEvent InventoryItemEvent {
         	persistent
         	String itemId index
+        	Long aggregateVersion nullable
+        	Long changeSequence nullable
         	
         	Repository InventoryItemEventRepository { 
         		List<@InventoryItemEvent> findAllForItem(String itemId);
