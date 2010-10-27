@@ -1,5 +1,6 @@
 package org.sample.simplecqrs.command.repositoryimpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sample.simplecqrs.command.domain.InventoryItem;
@@ -22,7 +23,7 @@ public class InventoryItemRepositoryImpl extends InventoryItemRepositoryBase {
         InventoryItem saved = super.save(entity);
 
         List<InventoryItemEvent> changes = entity.getUncommittedChanges();
-        assignVersionToChanges(changes, saved.getVersion());
+        changes = applyVersionToChanges(changes, saved.getVersion());
         for (InventoryItemEvent each : changes) {
             getInventoryItemEventRepository().save(each);
         }
@@ -31,17 +32,21 @@ public class InventoryItemRepositoryImpl extends InventoryItemRepositoryBase {
         return saved;
     }
 
-    private void assignVersionToChanges(List<InventoryItemEvent> changes, long version) {
+    private List<InventoryItemEvent> applyVersionToChanges(
+            List<InventoryItemEvent> changes, long version) {
+        List<InventoryItemEvent> result = new ArrayList<InventoryItemEvent>();
         long sequence = version * 1000;
         for (InventoryItemEvent each : changes) {
-            each.setVersion(version);
-            each.setSeq(sequence);
+            result.add(each.withAggregateVersion(version).withChangeSequence(
+                    sequence));
             sequence++;
         }
+        return result;
     }
 
     @Override
-    public InventoryItem findByKey(String itemId) throws InventoryItemNotFoundException {
+    public InventoryItem findByKey(String itemId)
+            throws InventoryItemNotFoundException {
         InventoryItem result = super.findByKey(itemId);
 
         loadFromHistory(result);
@@ -50,12 +55,13 @@ public class InventoryItemRepositoryImpl extends InventoryItemRepositoryBase {
     }
 
     private void loadFromHistory(InventoryItem entity) {
-        InventoryItemSnapshot snapshot = getInventoryItemSnapshotRepository().getLatestSnapshot(entity.getItemId());
+        InventoryItemSnapshot snapshot = getInventoryItemSnapshotRepository()
+                .getLatestSnapshot(entity.getItemId());
         entity.applySnapshot(snapshot);
         long snapshotVersion = snapshot == null ? 0 : snapshot.getVersion();
 
-        List<InventoryItemEvent> history = getInventoryItemEventRepository().findAllAfter(entity.getItemId(),
-                snapshotVersion);
+        List<InventoryItemEvent> history = getInventoryItemEventRepository()
+                .findAllAfter(entity.getItemId(), snapshotVersion);
         entity.loadFromHistory(history);
     }
 

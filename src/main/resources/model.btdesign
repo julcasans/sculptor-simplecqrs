@@ -47,9 +47,11 @@ Application SimpleCqrs {
         abstract DomainEvent InventoryItemEvent {
         	persistent
         	String itemId index
+        	Long aggregateVersion nullable
+        	Long changeSequence nullable
         	
         	Repository InventoryItemEventRepository { 
-        		List<@InventoryItemEvent> findAllAfter(String itemId, long version);
+        		List<@InventoryItemEvent> findAllAfter(String itemId, long aggregateVersion);
         		save publish to inventoryItemTopic;
         		protected findByCondition;
         	}

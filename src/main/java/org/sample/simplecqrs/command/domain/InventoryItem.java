@@ -47,13 +47,15 @@ public class InventoryItem extends InventoryItemBase {
 
     public void checkIn(int some) {
         if (some <= 0)
-            throw new IllegalArgumentException("must have a count greater than 0 to add to inventory");
+            throw new IllegalArgumentException(
+                    "must have a count greater than 0 to add to inventory");
         applyChange(new ItemsCheckedInToInventory(new Date(), getItemId(), some));
     }
 
     public void remove(int some) {
         if (some <= 0)
-            throw new IllegalArgumentException("cant remove negative count from inventory");
+            throw new IllegalArgumentException(
+                    "cant remove negative count from inventory");
         applyChange(new ItemsRemovedFromInventory(new Date(), getItemId(), some));
     }
 
@@ -84,7 +86,7 @@ public class InventoryItem extends InventoryItemBase {
         if (isNew) {
             changes.add(event);
         } else {
-            setVersion(event.getVersion());
+            setVersion(event.getAggregateVersion());
         }
     }
 
@@ -107,7 +109,8 @@ public class InventoryItem extends InventoryItemBase {
     }
 
     public InventoryItemSnapshot createSnapshot() {
-        return new InventoryItemSnapshot(getItemId(), isActivated(), getVersion());
+        return new InventoryItemSnapshot(getItemId(), isActivated(),
+                getVersion());
     }
 
 }

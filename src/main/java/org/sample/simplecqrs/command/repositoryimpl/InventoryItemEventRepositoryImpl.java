@@ -2,8 +2,8 @@ package org.sample.simplecqrs.command.repositoryimpl;
 
 import static org.fornax.cartridges.sculptor.framework.accessapi.ConditionalCriteriaBuilder.criteriaFor;
 import static org.sample.simplecqrs.command.domain.InventoryItemEventProperties.itemId;
-import static org.sample.simplecqrs.command.domain.InventoryItemEventProperties.seq;
-import static org.sample.simplecqrs.command.domain.InventoryItemEventProperties.version;
+import static org.sample.simplecqrs.command.domain.InventoryItemEventProperties.changeSequence;
+import static org.sample.simplecqrs.command.domain.InventoryItemEventProperties.aggregateVersion;
 
 import java.util.List;
 
@@ -20,9 +20,10 @@ public class InventoryItemEventRepositoryImpl extends InventoryItemEventReposito
     }
 
     @Override
-    public List<InventoryItemEvent> findAllAfter(String itemId, long version) {
+    public List<InventoryItemEvent> findAllAfter(String itemId, long aggregateVersion) {
         List<ConditionalCriteria> criteria = criteriaFor(InventoryItemEvent.class).withProperty(itemId()).eq(itemId)
-                .and().withProperty(version()).greaterThan(version).orderBy(seq()).build();
+                .and().withProperty(aggregateVersion()).greaterThan(aggregateVersion)
+                .orderBy(changeSequence()).build();
         return findByCondition(criteria);
     }
 }

@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service;
  * Implementation of InventoryItemSnapshotter.
  */
 @Service("inventoryItemSnapshotter")
-public class InventoryItemSnapshotterImpl extends InventoryItemSnapshotterImplBase {
+public class InventoryItemSnapshotterImpl extends
+        InventoryItemSnapshotterImplBase {
 
     private static final int VERSION_DELTA = 100;
     private final Log log = LogFactory.getLog(getClass());
@@ -21,6 +22,7 @@ public class InventoryItemSnapshotterImpl extends InventoryItemSnapshotterImplBa
     public InventoryItemSnapshotterImpl() {
     }
 
+    @Override
     public void receive(Event event) {
         if (!(event instanceof InventoryItemEvent)) {
             return;
@@ -29,9 +31,11 @@ public class InventoryItemSnapshotterImpl extends InventoryItemSnapshotterImplBa
         InventoryItemEvent inventoryItemEvent = (InventoryItemEvent) event;
         String itemId = inventoryItemEvent.getItemId();
 
-        InventoryItemSnapshot snapshot = getInventoryItemSnapshotRepository().getLatestSnapshot(itemId);
+        InventoryItemSnapshot snapshot = getInventoryItemSnapshotRepository()
+                .getLatestSnapshot(itemId);
         long snapshotVersion = snapshot == null ? 1 : snapshot.getVersion();
-        long eventVersion = inventoryItemEvent.getVersion() == null ? 1 : inventoryItemEvent.getVersion();
+        long eventVersion = inventoryItemEvent.getAggregateVersion() == null ? 1
+                : inventoryItemEvent.getAggregateVersion();
         if (eventVersion - snapshotVersion >= VERSION_DELTA) {
             takeSnapshot(itemId);
         }
