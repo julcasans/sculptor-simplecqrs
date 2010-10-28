@@ -60,32 +60,32 @@
 				</configuration>
 			</plugin>
 			<plugin>
-		<groupId>org.fornax.toolsupport</groupId>
-		<artifactId>fornax-oaw-m2-plugin</artifactId>
-		<version>${fornax-oaw-m2.version}</version>
-		<configuration>
-			<workflowEngine>mwe2</workflowEngine>
-			<workflowDescriptor>file://${basedir}/src/main/resources/generator/Workflow.mwe2</workflowDescriptor>
-			<checkFilesets>
-				<checkFileset>
-					<directory>${basedir}</directory>
-					<includes><include>src/main/resources/*.btdesign</include></includes>
-				</checkFileset>
-			</checkFilesets>
-			<properties>
-				<modelFile>src/main/resources/model.btdesign</modelFile>
-				<appProject>${artifactId}</appProject>
-			</properties>
-		</configuration>
-		<executions>
-			<execution>
-				<phase>generate-sources</phase>
-				<goals>
-					<goal>run-workflow</goal>
-				</goals>
-			</execution>
-		</executions>
-	</plugin>
+				<groupId>org.fornax.toolsupport</groupId>
+				<artifactId>fornax-oaw-m2-plugin</artifactId>
+				<version>${fornax-oaw-m2.version}</version>
+				<configuration>
+					<workflowEngine>mwe2</workflowEngine>
+					<workflowDescriptor>file://${basedir}/src/main/resources/generator/Workflow.mwe2</workflowDescriptor>
+					<checkFilesets>
+						<checkFileset>
+							<directory>${basedir}</directory>
+							<includes><include>src/main/resources/*.btdesign</include></includes>
+						</checkFileset>
+					</checkFilesets>
+					<properties>
+						<modelFile>src/main/resources/model.btdesign</modelFile>
+						<appProject>${artifactId}</appProject>
+					</properties>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run-workflow</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.fornax.toolsupport</groupId>
 				<artifactId>fornax-checksum-m2-plugin</artifactId>
