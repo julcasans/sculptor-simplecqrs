@@ -37,8 +37,8 @@ public class InventoryItemRepositoryImpl extends InventoryItemRepositoryBase {
         List<InventoryItemEvent> result = new ArrayList<InventoryItemEvent>();
         long sequence = version * 1000;
         for (InventoryItemEvent each : changes) {
-            result.add(each.withAggregateVersion(version).withChangeSequence(
-                    sequence));
+            result.add(each.withAggregateVersion(version)
+                    .withChangeSequence(sequence));
             sequence++;
         }
         return result;

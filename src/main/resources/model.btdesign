@@ -4,76 +4,78 @@ Application SimpleCqrs {
 	Module command {
 		
         Entity InventoryItem {
-        	gap
-        	String itemId key
-        	boolean activated transient
+	        	gap
+	        	String itemId key
+	        	String name transient
+	        	int currentCount transient
+	        	boolean activated transient
         	
-        	Repository InventoryItemRepository {
-        		gap
-        		inject @InventoryItemEventRepository
-        		inject @InventoryItemSnapshotRepository
-        		findByKey;
-        		save;
-        	}
+	        	Repository InventoryItemRepository {
+	        		gap
+	        		inject @InventoryItemEventRepository
+	        		inject @InventoryItemSnapshotRepository
+	        		findByKey;
+	        		save;
+	        	}
         }
         
         Service InventoryItemSnapshotter {
-        	subscribe to inventoryItemTopic
-        	inject @InventoryItemRepository
-        	inject @InventoryItemSnapshotRepository
+	        	subscribe to inventoryItemTopic
+	        	inject @InventoryItemRepository
+	        	inject @InventoryItemSnapshotRepository
         }
         
         ValueObject InventoryItemSnapshot {
-        	String itemId index
-        	boolean activated
-        	Long version
-        	
-        	Repository InventoryItemSnapshotRepository {
-        		@InventoryItemSnapshot getLatestSnapshot(String itemId);
-        		protected findByCondition(PagingParameter pagingParameter);
-        		save;
-        	}
+	        	String itemId index
+	        	String state
+	        	Long version
+	        	
+	        	Repository InventoryItemSnapshotRepository {
+	        		@InventoryItemSnapshot getLatestSnapshot(String itemId);
+	        		protected findByCondition(PagingParameter pagingParameter);
+	        		save;
+	        	}
         }
         
         Service InventoryFacade {
-        	inject @InventoryItemRepository
-        	createInventoryItem(String itemId, String name);
-        	deactivateInventoryItem(String itemId);
-        	renameInventoryItem(String itemId, String newName);
-        	checkInItemsToInventory(String itemId, int count);
-        	removeItemsFromInventory(String itemId, int count);
+	        	inject @InventoryItemRepository
+	        	createInventoryItem(String itemId, String name);
+	        	deactivateInventoryItem(String itemId);
+	        	renameInventoryItem(String itemId, String newName);
+	        	checkInItemsToInventory(String itemId, int count);
+	        	removeItemsFromInventory(String itemId, int count);
         }
         
         abstract DomainEvent InventoryItemEvent {
-        	persistent
-        	String itemId index
-        	Long aggregateVersion nullable
-        	Long changeSequence nullable
-        	
-        	Repository InventoryItemEventRepository { 
-        		List<@InventoryItemEvent> findAllAfter(String itemId, long aggregateVersion);
-        		save publish to inventoryItemTopic;
-        		protected findByCondition;
-        	}
+	        	persistent
+	        	String itemId index
+	        	Long aggregateVersion nullable
+	        	Long changeSequence nullable
+	        	
+	        	Repository InventoryItemEventRepository { 
+	        		List<@InventoryItemEvent> findAllAfter(String itemId, long aggregateVersion);
+	        		save publish to inventoryItemTopic;
+	        		protected findByCondition;
+	        	}
         }
         
         DomainEvent InventoryItemDeactivated extends @InventoryItemEvent {
         }
         
         DomainEvent InventoryItemCreated extends @InventoryItemEvent {
-        	String name
+        		String name
         }
         
         DomainEvent InventoryItemRenamed extends @InventoryItemEvent {
-        	String newName
+        		String newName
         }
         
         DomainEvent ItemsCheckedInToInventory extends @InventoryItemEvent {
-        	int countChange
+        		int countChange
         }
         
         DomainEvent ItemsRemovedFromInventory extends @InventoryItemEvent {
-        	int countChange
+        		int countChange
         }
 	
 	}

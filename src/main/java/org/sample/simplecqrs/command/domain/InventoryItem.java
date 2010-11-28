@@ -61,11 +61,28 @@ public class InventoryItem extends InventoryItemBase {
     }
 
     public void apply(InventoryItemCreated event) {
+        setName(event.getName());
         setActivated(true);
     }
 
     public void apply(InventoryItemDeactivated event) {
         setActivated(false);
+    }
+
+    public void apply(InventoryItemRenamed event) {
+        setName(event.getNewName());
+    }
+
+    public void apply(ItemsCheckedInToInventory event) {
+        changeCurrentCount(event.getCountChange());
+    }
+
+    public void apply(ItemsRemovedFromInventory event) {
+        changeCurrentCount(-event.getCountChange());
+    }
+
+    private void changeCurrentCount(int change) {
+        setCurrentCount(getCurrentCount() + change);
     }
 
     public void apply(Object other) {
@@ -105,12 +122,24 @@ public class InventoryItem extends InventoryItemBase {
         if (snapshot == null) {
             return;
         }
-        setActivated(snapshot.isActivated());
+
+        // in real world you would use a better format than this
+        String[] stateParts = snapshot.getState().split("\\|");
+        setActivated(Boolean.valueOf(stateParts[0]));
+        setName(stateParts[1]);
+        setCurrentCount(Integer.valueOf(stateParts[2]));
+
         setVersion(snapshot.getVersion());
     }
 
     public InventoryItemSnapshot createSnapshot() {
-        return new InventoryItemSnapshot(getItemId(), isActivated(),
+        // in real world you would use a better format than this
+        StringBuilder state = new StringBuilder();
+        state.append(isActivated()).append("|");
+        state.append(getName()).append("|");
+        state.append(getCurrentCount()).append("|");
+
+        return new InventoryItemSnapshot(getItemId(), state.toString(),
                 getVersion());
     }
 
