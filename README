@@ -1,2 +1,6 @@
 SimpleCQRS sample with Sculptor
-Original sample by Greg Young: http://github.com/gregoryyoung/m-r
+Port of original sample by Greg Young: http://github.com/gregoryyoung/m-r
+
+It is described in these blog posts:
+http://fornax-sculptor.blogspot.com/2010/10/event-sourcing-with-sculptor.html
+http://fornax-sculptor.blogspot.com/2010/10/event-sourcing-with-sculptor-snapshots.html
