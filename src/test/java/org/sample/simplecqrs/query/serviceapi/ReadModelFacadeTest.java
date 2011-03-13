@@ -9,8 +9,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 /**
  * Spring based test with MongoDB.
@@ -18,8 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 @RunWith(org.springframework.test.context.junit4.SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext-test.xml" })
 @Ignore
-public class ReadModelFacadeTest extends AbstractDependencyInjectionSpringContextTests implements
-        ReadModelFacadeTestBase {
+public class ReadModelFacadeTest extends AbstractJUnit4SpringContextTests implements ReadModelFacadeTestBase {
     @Autowired
     private DbManager dbManager;
     @Autowired
@@ -51,10 +50,12 @@ public class ReadModelFacadeTest extends AbstractDependencyInjectionSpringContex
         return (int) dbManager.getDBCollection(name).getCount();
     }
 
+    @Override
     @Test
     public void testGetInventoryItems() throws Exception {
     }
 
+    @Override
     @Test
     public void testGetInventoryItemDetails() throws Exception {
     }

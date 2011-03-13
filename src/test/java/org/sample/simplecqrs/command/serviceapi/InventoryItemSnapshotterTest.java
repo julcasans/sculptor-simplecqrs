@@ -1,5 +1,7 @@
 package org.sample.simplecqrs.command.serviceapi;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Set;
 
 import org.fornax.cartridges.sculptor.framework.accessimpl.mongodb.DbManager;
@@ -9,15 +11,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sample.simplecqrs.command.mapper.InventoryItemSnapshotMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 /**
  * Spring based test with MongoDB.
  */
 @RunWith(org.springframework.test.context.junit4.SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext-test.xml" })
-public class InventoryItemSnapshotterTest extends AbstractDependencyInjectionSpringContextTests implements
+public class InventoryItemSnapshotterTest extends AbstractJUnit4SpringContextTests implements
         InventoryItemSnapshotterTestBase {
     @Autowired
     private DbManager dbManager;
@@ -53,6 +55,7 @@ public class InventoryItemSnapshotterTest extends AbstractDependencyInjectionSpr
         return (int) dbManager.getDBCollection(name).getCount();
     }
 
+    @Override
     @Test
     public void testReceive() throws Exception {
         String itemId = "7890";

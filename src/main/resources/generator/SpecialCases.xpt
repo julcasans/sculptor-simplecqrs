@@ -9,7 +9,7 @@ Sculptor Developer's Guide for more information.
 «EXTENSION extensions::helper»
 «EXTENSION extensions::properties»
 
-«AROUND templates::DomainObject::domainObjectHook FOR DomainObject»
+«AROUND templates::domain::DomainObject::domainObjectHook FOR DomainObject»
     // This comment was generated from SpecialCases.xpt 
 «ENDAROUND»
 

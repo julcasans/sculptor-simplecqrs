@@ -1,5 +1,7 @@
 package org.sample.simplecqrs.command.serviceapi;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Set;
 
 import org.fornax.cartridges.sculptor.framework.accessimpl.mongodb.DbManager;
@@ -12,16 +14,15 @@ import org.sample.simplecqrs.query.mapper.InventoryItemDetailsMapper;
 import org.sample.simplecqrs.query.mapper.InventoryItemListMapper;
 import org.sample.simplecqrs.query.serviceapi.ReadModelFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 /**
  * Spring based test with MongoDB.
  */
 @RunWith(org.springframework.test.context.junit4.SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext-test.xml" })
-public class InventoryFacadeTest extends AbstractDependencyInjectionSpringContextTests implements
-        InventoryFacadeTestBase {
+public class InventoryFacadeTest extends AbstractJUnit4SpringContextTests implements InventoryFacadeTestBase {
     @Autowired
     private DbManager dbManager;
     @Autowired
@@ -67,6 +68,7 @@ public class InventoryFacadeTest extends AbstractDependencyInjectionSpringContex
         return countRowsInDBCollection(InventoryItemMapper.getInstance().getDBCollectionName());
     }
 
+    @Override
     @Test
     public void testCreateInventoryItem() throws Exception {
         inventoryFacade.createInventoryItem("1234", "The Book");
@@ -78,6 +80,7 @@ public class InventoryFacadeTest extends AbstractDependencyInjectionSpringContex
         assertEquals("The Book", readFacade.getInventoryItemDetails("1234").getName());
     }
 
+    @Override
     @Test
     public void testDeactivateInventoryItem() throws Exception {
         inventoryFacade.createInventoryItem("1234", "The Book");
@@ -88,6 +91,7 @@ public class InventoryFacadeTest extends AbstractDependencyInjectionSpringContex
         assertEquals(0, countRowsInInventoryItemList());
     }
 
+    @Override
     @Test
     public void testRenameInventoryItem() throws Exception {
         inventoryFacade.createInventoryItem("1234", "The Book");
@@ -95,6 +99,7 @@ public class InventoryFacadeTest extends AbstractDependencyInjectionSpringContex
         assertEquals("The Book!!!", readFacade.getInventoryItemDetails("1234").getName());
     }
 
+    @Override
     @Test
     public void testCheckInItemsToInventory() throws Exception {
         inventoryFacade.createInventoryItem("1234", "The Book");
@@ -102,6 +107,7 @@ public class InventoryFacadeTest extends AbstractDependencyInjectionSpringContex
         assertEquals(100, readFacade.getInventoryItemDetails("1234").getCurrentCount());
     }
 
+    @Override
     @Test
     public void testRemoveItemsFromInventory() throws Exception {
         inventoryFacade.createInventoryItem("1234", "The Book");

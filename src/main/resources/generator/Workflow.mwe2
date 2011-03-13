@@ -4,7 +4,6 @@ import workflow
 
 Workflow {
 	component = @Sculptorworkflow {
-		projectName = "sculptor-simplecqrs"
 		modelFile = "classpath:/model.btdesign"
 		// For org.eclipse.xtext.mwe.Reader:
 		// modelFile = "."

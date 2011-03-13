@@ -9,8 +9,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 /**
  * Spring based test with MongoDB.
@@ -18,7 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 @RunWith(org.springframework.test.context.junit4.SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext-test.xml" })
 @Ignore
-public class InventoryItemDetailViewTest extends AbstractDependencyInjectionSpringContextTests implements
+public class InventoryItemDetailViewTest extends AbstractJUnit4SpringContextTests implements
         InventoryItemDetailViewTestBase {
     @Autowired
     private DbManager dbManager;
@@ -51,6 +51,7 @@ public class InventoryItemDetailViewTest extends AbstractDependencyInjectionSpri
         return (int) dbManager.getDBCollection(name).getCount();
     }
 
+    @Override
     @Test
     public void testReceive() throws Exception {
     }

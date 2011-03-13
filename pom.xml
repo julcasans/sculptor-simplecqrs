@@ -9,18 +9,19 @@
 	<name>Business tier project for simplecqrs</name>
 	<properties>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-		<fornax-oaw-m2.version>3.2.0-SNAPSHOT</fornax-oaw-m2.version>
-		<spring.version>3.0.3.RELEASE</spring.version>
-		<log4j.version>1.2.14</log4j.version>
-		<commons-logging.version>1.0.3</commons-logging.version>
+		<fornax-oaw-m2.version>3.2.3</fornax-oaw-m2.version>
+		<spring.version>3.0.4.RELEASE</spring.version>
 		<commons-lang.version>2.1</commons-lang.version>
-		<sculptor.version>2.0.0-SNAPSHOT</sculptor.version>
+		<slf4j.version>1.6.1</slf4j.version>
+		<logback.version>0.9.28</logback.version>
+		<sculptor.version>2.0.0</sculptor.version>
 	</properties>
 	<build>
 		<finalName>sculptor-simplecqrs</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
 				<configuration>
 					<filesets>
 						<fileset>
@@ -85,7 +86,7 @@
 					</checkFilesets>
 					<properties>
 						<modelFile>src/main/resources/model.btdesign</modelFile>
-						<appProject>${artifactId}</appProject>
+						<appProject>${project.artifactId}</appProject>
 					</properties>
 				</configuration>
 				<executions>
@@ -141,7 +142,7 @@
 				<version>2.3</version>
 				<configuration>
 					<forkMode>once</forkMode>
-					<argLine>-Xms32m -Xmx1024m -Dlog4j.configuration=log4j-test.properties</argLine>
+					<argLine>-Xms32m -Xmx1024m</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -157,11 +158,24 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
-			<!-- Add scope provided when deployed in jboss -->
-		    <!-- <scope>provided</scope> -->
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
 		</dependency>
 		<!-- Remove dependency to javax.transaction when running in 
         		a transaction supporting container (jboss etc) -->
@@ -179,6 +193,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+  					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -229,12 +249,12 @@
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.7.0</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>${commons-logging.version}</version>
-			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+  					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -258,6 +278,7 @@
 			<groupId>org.fornax.cartridges</groupId>
 			<artifactId>fornax-cartridges-sculptor-framework</artifactId>
 			<version>${sculptor.version}</version>
+			<classifier>without-ejb</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.fornax.cartridges</groupId>
@@ -287,45 +308,15 @@
 	<!-- Remove repositories element when using multi module, they are defined in parent pom.xml -->
 	<repositories>
 		<repository>
-			<id>releases.archiva.fornax-platform.org</id>
-			<name>Archiva Managed Release Repository</name>
-			<url>
-				http://www.fornax-platform.org/archiva/repository/releases/
-			</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>snapshots.archiva.fornax-platform.org</id>
-			<name>Archiva Managed Snapshot Repository</name>
-			<url>
-				http://www.fornax-platform.org/archiva/repository/snapshots/
-			</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>java.net</id>
-			<url>http://download.java.net/maven/1</url>
-			<layout>legacy</layout>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
+			<id>fornax-platform.org</id>
+			<name>Fornax Repository</name>
+			<url>http://fornax-platform.org/nexus/content/repositories/public</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>true</enabled></snapshots>
 		</repository>
 		<repository>
 			<id>jboss.org</id>
-			<url>http://repository.jboss.org/maven2/</url>
+			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -358,26 +349,13 @@
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
-			<id>releases.archiva.fornax-platform.org</id>
-			<name>Archiva Managed Release Repository</name>
+			<id>fornax-platform.org</id>
+			<name>Fornax Repository</name>
 			<url>
-				http://www.fornax-platform.org/archiva/repository/releases/
+				http://fornax-platform.org/nexus/content/repositories/public
 			</url>
 			<releases>
 				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>snapshots.archiva.fornax-platform.org</id>
-			<name>Archiva Managed Snapshot Repository</name>
-			<url>
-				http://www.fornax-platform.org/archiva/repository/snapshots/
-			</url>
-			<releases>
-				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
